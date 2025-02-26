@@ -2,11 +2,6 @@ fastapi
 uvicorn
 requests
 pandas
-unidecode
-sqlalchemy
-psycopg2-binary
 scikit-learn
-streamlit
-matplotlib
-yfinance
-evidently
+gdown
+nltk

@@ -4,16 +4,12 @@ Repositório criado para atender aos requisitos do Tech Challenge da fase atual 
 ## Integrantes
 - Eduardo Dias
 - Felipe Langoni
-- Maxuel Pereira de Oliveira
-- Rodrigo de Souza Francisco
 
 ## Tecnologias utilizadas
 - Python
 - FastAPI
-- Streamlit
 - Swagger
 - Docker
-- Postgresql
 
 ## Proposta do Desafio
 O objetivo deste projeto é construir uma API que colete dados, armazene essas informações em um banco de dados relacional e treine um modelo de Machine Learning utilizando essa base de dados. O modelo treinado deve ser utilizado para alimentar uma aplicação ou dashboard, apresentando visualmente os resultados do processo.
@@ -22,54 +18,41 @@ O objetivo deste projeto é construir uma API que colete dados, armazene essas i
 ## Soluções Implementadas
 
 ### Dados Coletados
-Utilizamos como dataset dados fornecidos pela B3 através [deste endpoint](https://sistemaswebb3-listados.b3.com.br/indexProxy/indexCall/GetPortfolioDay/eyJsYW5ndWFnZSI6InB0LWJyIiwicGFnZU51bWJlciI6MSwicGFnZVNpemUiOjEyMCwiaW5kZXgiOiJJQk9WIiwic2VnbWVudCI6IjIifQ==) e, com isso, obtermos dados como: Empresas listadas na bolsa de valores, sua participação percentual da ação na carteira teórica da BOVESPA e demais informações.
+Utilizamos como dataset dados fornecidos pela globo através [deste endpoint](https://drive.google.com/file/d/13rvnyK5PJADJQgYe-VbdXb7PpLPj7lPr/view).
 
 Com tais dados, precisamos fazer a distribuição em grupo das empresas que mais possuem maior correlação entre elas, seja por indíce de participação 
 Após coletados e armazenados, iniciamos o processo a sanitização dos dados. Este processo garante que a análise não considere dados inconsistentes ou nullos.
 
-### Algoritmo K-means
-- Utilizamos o Algoritmo K-means para fazer a distribuição da porcentagem de participação pela quantidade teórica
-- Separamos os dados em 2 clusters, considerando o resultado obtido com o Elbow Method
 
-### Elbow Method
-
-![](https://raw.githubusercontent.com/edurodriguesdias/tech-challenge-3/refs/heads/main/images/elbow_method.png)
-
-### Dashboard Visualização
-Para facilitar a visualização da distribuição feita pelo algoritmo K-means, utilizamos o `streamlit` onde é apresentado o resultado da análise de forma visual/
-
-Para acessar o dashboard, basta abrir o link http://localhost:8501 em seu navegador.
-
-<img width="1064" alt="image" src="https://github.com/user-attachments/assets/a202d9bc-b097-4562-a935-0d80514a4d09">
-
-### Fluxos da Aplicação
-![novo drawio](https://github.com/user-attachments/assets/adde7e1c-9b51-470f-82d9-b7fd2fe6ebb4)
 
 ## Iniciando a aplicação
 **Subir containers docker**
 ```
-docker-compose up -d
+sudo docker build -t meu-app .
+sudo docker run -it -p 80:80 meu-app
 ```
 
-**Instalar dependências do projeto**
-```
-docker-compose exec web pip install -r ./requirements/requirements.txt
-```
 
 **Limpar cache**
 ```
 rm -rf __pycache__
 ```
 
-## Banco de Dados
-Este projeto utiliza PostgreSQL como banco de dados. Certifique-se de que o container correspondente esteja em status `running` para o correto funcionamento da API.
-
-## Documentação
-A API está documentada usando Swagger. Com a aplicação rodando localmente, você pode acessar a documentação no seguinte endereço:
-http://localhost:8000/docs
-****
 
 ## Recursos da API
-- GET /extract-data: Coleta os dados da fonte e os armazena no banco de dados.
-- GET /optimal-centroid-number: Analisa as informações e indica a melhor quantidade de Clusters usando o Elbow Method.
-- POST /training-model: Inicia o processo de treinamento do modelo de Machine Learning com os dados armazenados.
+- POST /recommend - Recomenda noticias com base no histórico do usuário e a recencia das notícias, considerando o cold start, recomenda as notícias mais populares do momento caso não exista histórico.
+
+
+Como fazer uma requisição:
+
+```
+curl -X POST "http://localhost:80/recommend"      -H "Content-Type: application/json"      -d '{
+           "history": ["13db0ab1-eea2-4603-84c4-f40a876c7400"],
+           "timestampHistory_new": [1708473600],
+           "top_n": 3
+         }'
+```
+Output:
+```
+{"recommendations":[{"page":"d6620ce8-945f-4924-9b67-8bd3bffcdb7f","title":"Caso Vitória Gabrielly: STJ rejeita pedido da defesa para anulação de julgamento"},{"page":"59ea1631-5702-4b66-9aae-703ce1ee9e56","title":"PF prende mais três suspeitos de envolvimento na ocultação dos corpos de Bruno e Dom "},{"page":"9aa5e6c8-f7a9-46b4-839a-61a140210209","title":"PF faz operação contra..}]}
+```

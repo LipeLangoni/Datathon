@@ -1,12 +1,8 @@
-from tensorflow.keras.models import load_model
 import joblib
-import json
-import requests
 import numpy as np
 from fastapi import FastAPI
 import pickle
 from pydantic import BaseModel
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 
@@ -52,16 +48,25 @@ def recommend_news(request: RecommendRequest):
     if not viewed_indices:
         return {"message": "Nenhuma notícia válida encontrada no histórico.", "recommendations": []}
 
+    
     user_profile = np.mean(tfidf_matrix[viewed_indices], axis=0)
 
     scores = cosine_similarity(np.asarray(user_profile), tfidf_matrix).flatten()
 
-    news_timestamps = df_items["timestamp"].values
-    time_diffs = np.abs(news_timestamps - last_user_timestamp)  # Diferença de tempo em segundos
-    recency_factor = np.exp(-time_diffs / (7 * 24 * 3600))  # Decaimento para 7 dias
+    # Obter os índices do df_items que correspondem ao tfidf_matrix
+    valid_indices = df_items.index[df_items["page"].isin(doc_indices.keys())]
 
-    # Ajustar scores com a recência
-    adjusted_scores = scores * recency_factor
+    # Filtrar os timestamps corretamente
+    news_timestamps = df_items.loc[valid_indices, "timestamp"].values
+
+    # Garantir que time_diffs tenha o mesmo tamanho que scores
+    time_diffs = np.abs(news_timestamps - last_user_timestamp)
+
+    # Aplicar decaimento de recência
+    recency_factor = np.exp(-time_diffs / (7 * 24 * 3600))
+
+    # Ajustar scores garantindo que os tamanhos são compatíveis
+    adjusted_scores = scores[valid_indices] * recency_factor
 
     # Obter as top-N notícias mais relevantes e recentes
     recommended_indices = np.argsort(adjusted_scores)[::-1]
