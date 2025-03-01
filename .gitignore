@@ -7,3 +7,5 @@ __pycache__
 *.pyo
 *.pyd   
 *.csv
+*.pkl
+src/challenge-webmedia-e-globo-2023*
