@@ -87,3 +87,19 @@ curl -X POST "http://localhost:8000/recommend" \
 }
 ```
 
+## Etapas do Projeto
+
+1. **Treinamento do modelo**: 
+   - Usar o conjunto de dados para treinar o modelo de recomendação.
+   
+2. **Salvamento do modelo**: 
+   - Persistir o modelo treinado para uso em produção.
+   
+3. **Criação de uma API**: 
+   - Desenvolver uma API para fornecer previsões de recomendação.
+   
+4. **Empacotamento com Docker**: 
+   - Utilizar Docker para garantir a portabilidade e escalabilidade.
+   
+5. **Testes e validação da API**: 
+   - Testar e validar o funcionamento da API.
