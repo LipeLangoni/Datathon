@@ -87,19 +87,30 @@ curl -X POST "http://localhost:8000/recommend" \
 }
 ```
 
-## Etapas do Projeto
 
-1. **Treinamento do modelo**: 
-   - Usar o conjunto de dados para treinar o modelo de recomendação.
-   
-2. **Salvamento do modelo**: 
-   - Persistir o modelo treinado para uso em produção.
-   
-3. **Criação de uma API**: 
-   - Desenvolver uma API para fornecer previsões de recomendação.
-   
-4. **Empacotamento com Docker**: 
-   - Utilizar Docker para garantir a portabilidade e escalabilidade.
-   
-5. **Testes e validação da API**: 
-   - Testar e validar o funcionamento da API.
+## Sistema de Recomendação Usando Vetores
+Utilizamos uma abordagem de fatorização de matrizes, este sistema usa representações vetoriais para modelar usuários e itens.
+
+### Representação Vetorial
+Cada usuário e item é representado como um vetor em um espaço multidimensional. Por exemplo, se tivermos três características (por exemplo, gênero, avaliação, popularidade), um vetor de item pode ser assim: `[0.8, 0.6, 0.9]`.
+
+### Cálculo de Similaridade
+Para recomendar itens, calculamos a similaridade entre vetores de usuários e vetores de itens. Um método comum é a similaridade do cosseno, que mede o cosseno do ângulo entre dois vetores:
+
+```python
+from numpy import dot
+from numpy.linalg import norm
+
+def cosine_similarity(vec1, vec2):
+    return dot(vec1, vec2) / (norm(vec1) * norm(vec2))
+```
+
+### Geração de Recomendações
+Com base nas pontuações de similaridade, podemos recomendar itens que são mais semelhantes às preferências do usuário. Por exemplo:
+
+```python
+def recommend_items(user_vector, item_vectors):
+    similarities = [cosine_similarity(user_vector, item) for item in item_vectors]
+    recommended_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)
+    return recommended_indices
+```
