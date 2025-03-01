@@ -97,20 +97,5 @@ Cada usuário e item é representado como um vetor em um espaço multidimensiona
 ### Cálculo de Similaridade
 Para recomendar itens, calculamos a similaridade entre vetores de usuários e vetores de itens. Um método comum é a similaridade do cosseno, que mede o cosseno do ângulo entre dois vetores:
 
-```python
-from numpy import dot
-from numpy.linalg import norm
-
-def cosine_similarity(vec1, vec2):
-    return dot(vec1, vec2) / (norm(vec1) * norm(vec2))
-```
-
 ### Geração de Recomendações
-Com base nas pontuações de similaridade, podemos recomendar itens que são mais semelhantes às preferências do usuário. Por exemplo:
-
-```python
-def recommend_items(user_vector, item_vectors):
-    similarities = [cosine_similarity(user_vector, item) for item in item_vectors]
-    recommended_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)
-    return recommended_indices
-```
+Com base nas pontuações de similaridade, podemos recomendar itens que são mais semelhantes às preferências do usuário.
