@@ -61,8 +61,8 @@ curl -X POST "http://localhost:8000/recommend" \
 -H "Content-Type: application/json" \
 -d '{
     "history": ["13db0ab1-eea2-4603-84c4-f40a876c7400"],
-    "timestampHistory_new": [1708473600],
-    "top_n": 3
+    "timestampHistory": [1708473600],
+    "recommendationSize": 3
 }'
 ```
 
