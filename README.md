@@ -9,8 +9,8 @@ Este repositório foi criado para atender aos requisitos do **Datathon** da Fase
 ## Tecnologias Utilizadas
 - **Python**
 - **FastAPI**
-- **Swagger**
 - **Docker**
+- **Docker Compose**
 
 ## Descrição do Desafio
 
